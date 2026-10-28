@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Timeora smart calendar, event planner and scheduler.">
+    <title>Timeora | Smart Calendar & Scheduler</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+<div class="app">
+
+    <aside class="sidebar">
+        <a href="#" class="brand" data-page="Dashboard">
+            <span class="brand-icon">T</span>
+            <span>
+                <strong>Timeora<span class="brand-dot">.</span></strong>
+                <small>Smart Calendar & Scheduler</small>
+            </span>
+        </a>
+
+        <nav class="nav-menu">
+            <button class="nav-link active" data-page="Dashboard"><span>⌂</span> Dashboard</button>
+            <button class="nav-link" data-page="Calendar"><span>▦</span> Calendar</button>
+            <button class="nav-link" data-page="Add Event"><span>⊕</span> Add Event</button>
+            <button class="nav-link" data-page="My Events"><span>▤</span> My Events</button>
+            <button class="nav-link" data-page="Reminders"><span>♧</span> Reminders</button>
+            <button class="nav-link" data-page="Categories"><span>⠿</span> Categories</button>
+            <button class="nav-link" data-page="Settings"><span>⚙</span> Settings</button>
+        </nav>
+
+        <section class="side-categories">
+            <h3>Categories</h3>
+            <div id="sidebarCategories"></div>
+            <button class="clear-filter" id="clearFilter">Clear category filter</button>
+        </section>
+
+        <div class="sidebar-art">
+            <div class="art-icon">📅</div>
+            <h3>Make time for what matters.</h3>
+            <p>Stay organized. Stay productive.</p>
+            <span>💜</span>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <label class="search-box">
+                <span class="search-icon">⌕</span>
+                <input id="searchInput" type="search" placeholder="Search events, tasks...">
+                <button id="clearSearch" type="button" aria-label="Clear search">×</button>
+            </label>
+
+            <div class="top-actions">
+                <button class="icon-button notification-button" id="notificationBtn" title="Reminders">
+                    ♧ <span id="notificationCount">0</span>
+                </button>
+                <button class="icon-button" id="themeBtn" title="Toggle dark mode">☾</button>
+                <button class="profile-button" id="profileBtn">
+                    <span class="avatar">S</span>
+                    <strong id="profileName">Sirija</strong>
+                    <span>⌄</span>
+                </button>
+            </div>
+        </header>
+
+        <section class="notification-panel panel" id="notificationPanel" hidden>
+            <div class="panel-heading">
+                <h2>Reminders & Important Events</h2>
+                <button class="text-button" id="closeNotifications">Close ×</button>
+            </div>
+            <div id="notificationList"></div>
+        </section>
+
+        <section class="welcome-row">
+            <div>
+                <h1>Welcome back, <span id="welcomeName">Sirija</span>! 👋</h1>
+                <p>Plan your day, organize your events and make every moment count.</p>
+            </div>
+            <button class="primary-button" id="quickAddBtn">＋ New Event</button>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card stat-blue">
+                <div class="stat-icon">▦</div>
+                <div><p>Total Events</p><h2 id="totalEvents">0</h2><small id="monthlyEvents">This month</small></div>
+            </article>
+            <article class="stat-card stat-green">
+                <div class="stat-icon">✓</div>
+                <div><p>Completed</p><h2 id="completedEvents">0</h2><small id="completedPercent">0% completed</small></div>
+            </article>
+            <article class="stat-card stat-purple">
+                <div class="stat-icon">◷</div>
+                <div><p>Upcoming</p><h2 id="upcomingEvents">0</h2><small id="nextEvent">No upcoming events</small></div>
+            </article>
+            <article class="stat-card stat-pink">
+                <div class="stat-icon">☆</div>
+                <div><p>Important</p><h2 id="importantEvents">0</h2><small>Priority events</small></div>
+            </article>
+        </section>
+
+        <section class="panel calendar-panel" id="calendarSection">
+            <div class="calendar-toolbar">
+                <h2 id="calendarTitle">Calendar</h2>
+
+                <div class="calendar-controls">
+                    <button class="outline-button" id="prevMonth" aria-label="Previous period">‹</button>
+                    <button class="outline-button" id="nextMonth" aria-label="Next period">›</button>
+                    <button class="outline-button" id="todayBtn">Today</button>
+
+                    <div class="view-switcher">
+                        <button class="view-btn active" data-view="month">Month</button>
+                        <button class="view-btn" data-view="week">Week</button>
+                        <button class="view-btn" data-view="day">Day</button>
+                        <button class="view-btn" data-view="list">List</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weekday-row">
+                <span>Sun</span><span>Mon</span><span>Tue</span>
+                <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+
+            <div id="calendarGrid" class="calendar-grid"></div>
+            <p class="calendar-hint">Click a date to select it. Click an event to view or edit its details.</p>
+        </section>
+
+        <section class="bottom-grid">
+            <article class="panel schedule-panel" id="scheduleSection">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Today's Schedule</h2>
+                        <p id="scheduleDate"></p>
+                    </div>
+                    <button class="text-button" id="scheduleViewAll">View All →</button>
+                </div>
+                <div id="scheduleList"></div>
+            </article>
+
+            <article class="panel category-panel" id="categorySection">
+                <div class="panel-heading"><h2>Category Summary</h2></div>
+                <div class="category-chart-layout">
+                    <div class="chart-wrap">
+                        <div id="categoryChart" class="donut-chart">
+                            <div class="chart-center">
+                                <strong id="categoryTotal">0</strong>
+                                <span>Events</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="categoryLegend" class="category-legend"></div>
+                </div>
+            </article>
+        </section>
+
+        <footer>© 2026 Timeora · Make every day count. 💜</footer>
+    </main>
+
+    <aside class="right-column">
+        <section class="panel add-event-panel" id="eventFormPanel">
+            <div class="panel-heading">
+                <h2><span class="plus-icon">+</span> <span id="formTitle">Add New Event</span></h2>
+            </div>
+
+            <form id="eventForm">
+                <div class="field">
+                    <label for="eventTitle">Event Title *</label>
+                    <input id="eventTitle" maxlength="100" placeholder="Enter event title" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label for="eventDate">Date *</label>
+                        <input id="eventDate" type="date" required>
+                    </div>
+                    <div class="field">
+                        <label for="eventTime">Time *</label>
+                        <input id="eventTime" type="time" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label for="eventCategory">Category</label>
+                        <select id="eventCategory">
+                            <option value="Study">🔵 Study</option>
+                            <option value="Work">🟢 Work</option>
+                            <option value="Personal">🩷 Personal</option>
+                            <option value="Health">🟡 Health</option>
+                            <option value="Important">🔴 Important</option>
+                            <option value="Others">🟣 Others</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="eventReminder">Reminder</label>
+                        <select id="eventReminder">
+                            <option value="0">None</option>
+                            <option value="5">5 minutes</option>
+                            <option value="10" selected>10 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="1440">1 day</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" rows="3" maxlength="500" placeholder="Add some details..."></textarea>
+                </div>
+
+                <div class="form-row checkbox-row">
+                    <label><input id="eventImportant" type="checkbox"> ⭐ Important</label>
+                    <label><input id="eventCompleted" type="checkbox"> ✓ Completed</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="primary-button" id="submitEvent">＋ Add Event</button>
+                    <button type="button" class="secondary-button" id="cancelEdit" hidden>Cancel</button>
+                </div>
+
+                <p id="formMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="panel upcoming-panel" id="upcomingSection">
+            <div class="panel-heading">
+                <h2>♧ Upcoming Events</h2>
+                <button class="text-button" id="upcomingViewAll">View All →</button>
+            </div>
+            <div id="upcomingList"></div>
+        </section>
+
+        <section class="panel mini-calendar-panel">
+            <div class="panel-heading"><h2>▦ Quick Calendar</h2></div>
+            <div class="mini-toolbar">
+                <button id="miniPrev" aria-label="Previous month">‹</button>
+                <strong id="miniTitle"></strong>
+                <button id="miniNext" aria-label="Next month">›</button>
+            </div>
+            <div class="mini-weekdays">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
+                <span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="miniGrid" class="mini-grid"></div>
+        </section>
+    </aside>
+</div>
+
+<dialog id="eventDialog" class="event-dialog">
+    <div class="dialog-header">
+        <h2 id="dialogTitle">Event Details</h2>
+        <button id="closeDialog" class="icon-button" aria-label="Close">×</button>
+    </div>
+    <div id="dialogContent"></div>
+    <div class="dialog-actions">
+        <button id="editDialogEvent" class="primary-button">Edit</button>
+        <button id="completeDialogEvent" class="secondary-button">Complete</button>
+        <button id="deleteDialogEvent" class="danger-button">Delete</button>
+    </div>
+</dialog>
+
+</body>
+</html>
